@@ -22,13 +22,16 @@ export const model = (sequelize:Sequelize) => {
             defaultValue: "989472251298586654 989472515065794570 994938573298085928 "
         },
         pointsPerMessage:{
-            type: DataTypes.INTEGER
+            type: DataTypes.INTEGER,
+            defaultValue: 5
         },
         pointsPerThreadCreation:{
-            type: DataTypes.INTEGER
+            type: DataTypes.INTEGER,
+            defaultValue: 3
         },
         enabled: {
-            type: DataTypes.BOOLEAN
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
         }
-    })
+    }, {timestamps: false})
 }

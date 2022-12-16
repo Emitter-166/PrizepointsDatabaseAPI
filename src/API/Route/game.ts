@@ -58,10 +58,17 @@ export const getGame = async (req: Request, res: Response) => {
                 name: gameName
             }
         })
-        res.status(200).send({
-            message: "Model found",
-            model: model
-        })
+        if(model !== null){
+            res.status(200).send({
+                message: "Game found",
+                model: model
+            })
+        }else{
+            res.status(400).send({
+                message: "Game not found",
+            })
+        }
+
     }catch (err){
         res.send(500).send({
             message: "game probably doesn't exist"

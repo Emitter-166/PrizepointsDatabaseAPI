@@ -1,16 +1,11 @@
 type game = {
     id: number,
     name: string,
-    channels: {
-        channelName: string,
-        channelId: string
-    }[],
-    roles: {
-        roleName: string,
-        roleId: string
-    }[],
+    channels: string[],
+    roles: string[],
     pointsPerMessage: number,
-    pointsPerThreadCreation: number
+    pointsPerThreadCreation: number,
+    enabled: boolean
 }
 
 type points = {
@@ -29,16 +24,11 @@ type thread = {
 
 type gameUpdateField = {
     name: string,
-    channels?: {
-        channelName: string,
-        channelId: string
-    }[],
-    roles?: {
-        roleName: string,
-        roleId: string
-    }[],
+    channelIds?: string,
+    roleIds?: string,
     pointsPerMessage?: number,
-    pointsPerThreadCreation?: number
+    pointsPerThreadCreation?: number,
+    enabled?: boolean
 }
 
 type threadUpdateField = {

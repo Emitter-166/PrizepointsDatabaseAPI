@@ -1,6 +1,5 @@
 import {Request, Response} from "express";
 import {sequelize} from "../../index";
-import * as path from "path";
 import {model as pointsModel} from "../../Database/Models/Dynamic/points";
 export const getPoints =  async (req: Request, res: Response) => {
     const name = req.query.name as string;

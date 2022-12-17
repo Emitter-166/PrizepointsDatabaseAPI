@@ -14,11 +14,11 @@ import {Request, Response} from "express";
 import {getGame, getGames, updateGame} from "./Route/game";
 import {getPoints, setPoints} from "./Route/point";
 import {getAllThreads, getThread, setThreads} from "./Route/thread";
-
+import {authenticate} from "./Authentication/auth";
 export const startServer = () => {
     console.log("Server started")
 
-    app.get("/", async (req:Request, res:Response) => {
+    app.get("/", authenticate, async (req:Request, res:Response) => {
         res.status(200).send({
             message: "Not a valid URL",
             games: "api/v1/games | ?property=something",
@@ -28,18 +28,18 @@ export const startServer = () => {
         })
     })
 
-    app.get("/api/v1/games", async (req:Request, res:Response) => {
+    app.get("/api/v1/games",authenticate, async (req:Request, res:Response) => {
         if(Object.keys(req.query).length !== 0){
             await getGame(req, res);
         }else{
             await getGames(req, res);
         }
     })
-    app.post("/api/v1/games/update", async (req:Request, res:Response) =>{
+    app.post("/api/v1/games/update", authenticate,async (req:Request, res:Response) =>{
         await updateGame(req, res);
     })
 
-    app.get("/api/v1/points", async( req:Request, res:Response) =>{
+    app.get("/api/v1/points",authenticate, async( req:Request, res:Response) =>{
         const keys = Object.keys(req.query);
         if(keys.length === 1){
            await getPoints(req, res)
@@ -56,7 +56,7 @@ export const startServer = () => {
         }
     })
 
-    app.get("/api/v1/threads", async (req:Request, res:Response) => {
+    app.get("/api/v1/threads",authenticate, async (req:Request, res:Response) => {
         const lengthOfQuery:number = Object.keys(req.query).length;
 
         switch (lengthOfQuery){

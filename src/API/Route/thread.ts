@@ -2,6 +2,7 @@ import {Request, Response} from "express";
 import {sequelize} from "../../index";
 
 export const setThreads = async (req: Request, res: Response) => {
+
     const {threadId, points} = req.query;
     if (!threadId || !points) {
         res.status(400).send({

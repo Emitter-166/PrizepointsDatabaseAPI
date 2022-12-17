@@ -2,7 +2,6 @@ import {Sequelize} from "sequelize"
 import * as fs from 'fs';
 import * as path from "path";
 import {startServer} from "./API/app";
-
 import express from 'express';
 
 export const app = express();

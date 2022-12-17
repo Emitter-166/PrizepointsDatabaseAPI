@@ -9,10 +9,11 @@
 *
 */
 
-
-import {app, sequelize} from '../index';
+import {app} from '../index';
 import {Request, Response} from "express";
-import {getGame, getGames} from "./Route/game";
+import {getGame, getGames, updateGame} from "./Route/game";
+import {getPoints, setPoints} from "./Route/point";
+import {getAllThreads, getThread, setThreads} from "./Route/thread";
 
 export const startServer = () => {
     console.log("Server started")
@@ -20,47 +21,53 @@ export const startServer = () => {
     app.get("/", async (req:Request, res:Response) => {
         res.status(200).send({
             message: "Not a valid URL",
-            games: "api/v1/games",
-            createGames: "api/v1/games/create?name=something",
-            updateGames: "api/v1/games/update?property=something",
-            points: "api/v1/points?gameName=something",
-            addPoints:"api/v1/points?userId=something&points=1",
-            threads: "api/v1/threads",
-            getThread: "api/v1/threads?threadId=something",
-            createThreads: "api/v1/threads/create?threadId=something",
-            addPointsToThreads: "api/v1/threads/add?threadId=something&query=something"
+            games: "api/v1/games | ?property=something",
+            createOrUpdateGames: "api/v1/games/update?name=something&property=something",
+            points: "api/v1/points | ?name=something | ?name=something&userId=something&points=1",
+            threads: "api/v1/threads | ?threadId=something | ?threadId=something&points=1",
         })
     })
 
     app.get("/api/v1/games", async (req:Request, res:Response) => {
-        const {name} = req.query;
-        if(name){
+        if(Object.keys(req.query).length !== 0){
             await getGame(req, res);
         }else{
             await getGames(req, res);
         }
     })
+    app.post("/api/v1/games/update", async (req:Request, res:Response) =>{
+        await updateGame(req, res);
+    })
 
-    app.post("/api/v1/games/create", async (req:Request, res:Response) =>{
-        const {name} = req.query;
-        if(!name){
-            res.status(400).send({
-                message: "No name provided"
-            })
+    app.get("/api/v1/points", async( req:Request, res:Response) =>{
+        const keys = Object.keys(req.query);
+        if(keys.length === 1){
+           await getPoints(req, res)
+        }else if(keys.length === 3){
+           await setPoints(req, res)
         }else{
-            const [model, created] = await sequelize.model("games").findOrCreate({
-                where:{
-                    name: name
-                }, defaults:{
-                    name: name
+            res.status(400).send({
+                message: "No query provided",
+                example: {
+                    getPoints: "api/v1/points?name=something",
+                    setPoints:"api/v1/points?name=something&userId=something&points=1",
                 }
             })
+        }
+    })
 
-            if(!created){
-                res.status(400).send({message: "game already exist!", model})
-            }else{
-                res.status(200).send({message: "Game created! please enable it to make it runnable", model})
-            }
+    app.get("/api/v1/threads", async (req:Request, res:Response) => {
+        const lengthOfQuery:number = Object.keys(req.query).length;
+
+        switch (lengthOfQuery){
+            case 0:
+                await getAllThreads(req, res);
+                break;
+            case 1:
+                await getThread(req, res);
+                break;
+            case 2:
+                await setThreads(req, res);
         }
     })
 }

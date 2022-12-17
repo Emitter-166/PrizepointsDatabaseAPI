@@ -15,6 +15,7 @@ import {getGame, getGames, updateGame} from "./Route/game";
 import {getPoints, setPoints} from "./Route/point";
 import {getAllThreads, getThread, setThreads} from "./Route/thread";
 import {authenticate} from "./Authentication/auth";
+import {gameValidator, pointsValidator} from "./Route/Cache";
 export const startServer = () => {
     console.log("Server started")
 
@@ -25,6 +26,8 @@ export const startServer = () => {
             createOrUpdateGames: "api/v1/games/update?name=something&property=something",
             points: "api/v1/points | ?name=something | ?name=something&userId=something&points=1",
             threads: "api/v1/threads | ?threadId=something | ?threadId=something&points=1",
+            gameChanged: "api/v1/cache/games/?name=gameName&time=millis",
+            pointsChanged:"api/v1/cache/points/name=gameName&time=millis"
         })
     })
 
@@ -69,5 +72,13 @@ export const startServer = () => {
             case 2:
                 await setThreads(req, res);
         }
+    })
+
+    app.get("/api/v1/cache/games", authenticate, async (req:Request, res:Response) => {
+        await gameValidator(req, res);
+    })
+
+    app.get("/api/v1/cache/points", authenticate, async (req:Request, res:Response) => {
+        await pointsValidator(req, res);
     })
 }

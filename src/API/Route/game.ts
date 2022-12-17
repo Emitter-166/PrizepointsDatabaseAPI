@@ -1,29 +1,38 @@
 import {Request, Response} from "express";
 import {sequelize} from "../../index";
 
-export const updateGame = async (req: Request, res: Response) => {
+export const gamesCache = new Map<string, number>();
 
-    if(req.query.name === undefined){
+export const updateGame = async (req: Request, res: Response) => {
+    const {name} = req.query;
+    if(name === undefined){
         res.status(400).send({message: 'invalid format'})
         return;
     }
 
     let defaultObject = {...req.query};
+
     const [model, created] = await sequelize.model("games").findOrCreate({
-        where: {name: req.query.name},
+        where: {name: name},
         defaults: defaultObject
     })
+
+    const updatedAt = (new Date()).getTime();
+    gamesCache.set(name as string, updatedAt);
+
     if (!created) {
         await model.update(defaultObject)
         res.status(200).send({
             message: "Game updated",
-            model
+            model,
+            updatedAt
         })
         return;
     } else {
         res.status(200).send({
             message: "Game created",
-            model
+            model,
+            updatedAt
         })
     }
 }

@@ -33,5 +33,5 @@ export const model = (sequelize:Sequelize) => {
             type: DataTypes.INTEGER,
             defaultValue: false
         }
-    }, {timestamps: false})
+    }, {timestamps: true})
 }

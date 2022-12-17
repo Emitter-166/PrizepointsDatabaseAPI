@@ -8,6 +8,9 @@ export const model = (sequelize:Sequelize, modelName:string) => {
       },
         points: {
           type: DataTypes.INTEGER
+        },
+        time: {
+          type: DataTypes.BIGINT
         }
-    }, {timestamps: false})
+    }, {timestamps: true})
 }

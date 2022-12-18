@@ -39,14 +39,14 @@ export const updateGame = async (req: Request, res: Response) => {
 
 export const getGame = async (req: Request, res: Response) => {
    const whereObject = {...req.query};
-   const model = await sequelize.model("games").findAll({
+   const model = await sequelize.model("games").findOne({
        where: whereObject
    })
 
-    if(model.length === 0){
+    if(model === null){
         res.status(400).send({message: "Game not found"})
     }else{
-        res.status(200).send({message: "Game found", model})
+        res.status(200).send({message: "Game found", model, updatedAt: gamesCache.get(model.get("name") as string)})
     }
 }
 

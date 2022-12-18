@@ -30,8 +30,8 @@ export const model = (sequelize:Sequelize) => {
             defaultValue: 3
         },
         enabled: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.BOOLEAN,
             defaultValue: false
         }
-    }, {timestamps: true})
+    }, {timestamps: false})
 }

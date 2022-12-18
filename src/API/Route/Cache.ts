@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import {pointsCache} from "./point";
+import {pointsTableCache} from "./point";
 import {gamesCache} from "./game";
 
 export const gameValidator = async (req:Request, res:Response) => {
@@ -36,7 +36,7 @@ export const pointsValidator = async (req:Request, res:Response) => {
         return
     }
     try{
-        if(pointsCache.get(name as string) === Number(time)){
+        if(pointsTableCache.get(name as string) === Number(time)){
             res.status(200).send({
                 valid: true
             })

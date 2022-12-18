@@ -2,7 +2,7 @@ import {Request, Response} from "express";
 import {sequelize} from "../../index";
 import {model as pointsModel} from "../../Database/Models/Dynamic/points";
 
-export const pointsCache = new Map<string, number>();
+export const pointsTableCache = new Map<string, number>();
 
 export const getPoints =  async (req: Request, res: Response) => {
     const name = req.query.name as string;
@@ -14,7 +14,8 @@ export const getPoints =  async (req: Request, res: Response) => {
         const model = await sequelize.model(name).findAll();
         res.status(200).send({
             message: "points table found",
-            model
+            model,
+            updatedAt: pointsTableCache.get(name)
         })
     }catch (err){
         res.status(400).send({message: "No game points table with that name is found!"})
@@ -41,7 +42,7 @@ export const setPoints = async (req: Request, res: Response) => {
     });
 
     const updatedAt = (new Date()).getTime();
-    pointsCache.set(queryData.name as string, updatedAt);
+    pointsTableCache.set(queryData.name as string, updatedAt);
 
     if(created){
         res.status(200).send({

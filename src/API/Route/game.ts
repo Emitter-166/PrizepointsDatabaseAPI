@@ -1,5 +1,6 @@
 import {Request, Response} from "express";
 import {sequelize} from "../../index";
+import {Model} from "sequelize";
 
 export const gamesCache = new Map<string, number>();
 
@@ -39,14 +40,33 @@ export const updateGame = async (req: Request, res: Response) => {
 
 export const getGame = async (req: Request, res: Response) => {
    const whereObject = {...req.query};
-   const model = await sequelize.model("games").findOne({
+   const model = await sequelize.model("games").findAll({
        where: whereObject
    })
 
-    if(model === null){
+    if(model.length === 0){
         res.status(400).send({message: "Game not found"})
     }else{
-        res.status(200).send({message: "Game found", model, updatedAt: gamesCache.get(model.get("name") as string)})
+        let returnData:{
+            model: Model,
+            updatedAt: number
+        }[] = [];
+        model.forEach(model => {
+            let name = model.get("name") as string;
+            if(gamesCache.get(name) === undefined){
+               gamesCache.set(name, 0)
+                returnData.push({
+                    model: model,
+                    updatedAt: 0
+                })
+            }else{
+                returnData.push({
+                    model: model,
+                    updatedAt: gamesCache.get(name) as number
+                })
+            }
+        })
+        res.status(200).send({message: "Game found", returnData})
     }
 }
 

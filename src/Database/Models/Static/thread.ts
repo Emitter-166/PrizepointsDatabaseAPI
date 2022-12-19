@@ -4,7 +4,7 @@ export const model = (sequelize:Sequelize) => {
     sequelize.define("threads", {
         threadId:{
             type: DataTypes.CHAR(30),
-            unique: true
+            // unique: true
         },
         points:{
             type: DataTypes.INTEGER

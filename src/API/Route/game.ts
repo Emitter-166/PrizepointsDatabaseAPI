@@ -6,7 +6,7 @@ export const gamesCache = new Map<string, number>();
 
 export const updateGame = async (req: Request, res: Response) => {
     const {name} = req.query;
-    if(name === undefined){
+    if (name === undefined) {
         res.status(400).send({message: 'invalid format'})
         return;
     }
@@ -39,43 +39,44 @@ export const updateGame = async (req: Request, res: Response) => {
 }
 
 export const getGame = async (req: Request, res: Response) => {
-   const whereObject = {...req.query};
-   const model = await sequelize.model("games").findAll({
-       where: whereObject
-   })
+    const whereObject = {...req.query};
+    if(whereObject.enabled !== undefined){
+        whereObject.enabled = JSON.parse(whereObject.enabled as string);
+    }
+    const model = await sequelize.model("games").findOne({
+        where: whereObject
+    })
 
-    if(model.length === 0){
+    if (model === null) {
         res.status(400).send({message: "Game not found"})
-    }else{
-        let returnData:{
+    } else {
+        let returnData: {
             model: Model,
             updatedAt: number
-        }[] = [];
-        model.forEach(model => {
-            let name = model.get("name") as string;
-            if(gamesCache.get(name) === undefined){
-               gamesCache.set(name, 0)
-                returnData.push({
-                    model: model,
-                    updatedAt: 0
-                })
-            }else{
-                returnData.push({
-                    model: model,
-                    updatedAt: gamesCache.get(name) as number
-                })
+        };
+        let name = model.get("name") as string;
+        if (gamesCache.get(name) === undefined) {
+            gamesCache.set(name, 0)
+            returnData = {
+                model: model,
+                updatedAt: 0
             }
-        })
+        } else {
+            returnData = {
+                model: model,
+                updatedAt: gamesCache.get(name) as number
+            }
+        }
         res.status(200).send({message: "Game found", returnData})
     }
 }
 
-export const getGames = async (req:Request, res:Response) => {
-    try{
+export const getGames = async (req: Request, res: Response) => {
+    try {
         res.status(200).send(
             await sequelize.model("games").findAll()
         )
-    }catch (err) {
+    } catch (err) {
         res.status(500).send({
             message: "An internal error occurred, please try again or contact an admin"
         })

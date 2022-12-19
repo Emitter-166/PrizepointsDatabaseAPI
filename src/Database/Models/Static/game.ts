@@ -6,12 +6,12 @@ export const model = (sequelize:Sequelize) => {
         id:{
             type: DataTypes.INTEGER,
             primaryKey: true,
-            unique: true,
-            autoIncrement: true
+            // unique: true,
+            // autoIncrement: true
         },
         name:{
             type: DataTypes.CHAR(255),
-            unique: true
+            // unique: true
         },
         channelIds:{
             type: DataTypes.TEXT,

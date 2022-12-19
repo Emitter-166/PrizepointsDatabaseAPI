@@ -37,7 +37,7 @@ export const setPoints = async (req: Request, res: Response) => {
         gamePointsModel = sequelize.model(queryData.name as string);
     }
     const [model, created] = await gamePointsModel.findOrCreate({
-        where: {userId: queryData.name},
+        where: {userId: queryData.userId},
         defaults: {points: queryData.points}
     });
 

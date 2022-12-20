@@ -41,7 +41,13 @@ export const updateGame = async (req: Request, res: Response) => {
 export const getGame = async (req: Request, res: Response) => {
     const whereObject = {...req.query};
     if(whereObject.enabled !== undefined){
+        try{
         whereObject.enabled = JSON.parse(whereObject.enabled as string);
+        } catch(err){
+            res.status(400).send({
+                message: "invalid body"
+            })
+        }
     }
     const model = await sequelize.model("games").findOne({
         where: whereObject

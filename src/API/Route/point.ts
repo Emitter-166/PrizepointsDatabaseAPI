@@ -60,7 +60,8 @@ export const getPoints = async (req: Request, res: Response) => {
 
 export const setPoints = async (req: Request, res: Response) => {
     const queryData = req.query;
-    if (Object.keys(queryData).length !== 3) {
+    const {name, userId, points} = req.query;
+    if (!name || !userId || !points) {
         res.status(400).send({message: "invalid body"})
         return;
     }

@@ -11,7 +11,6 @@ export const model = (sequelize:Sequelize) => {
         },
         name:{
             type: DataTypes.CHAR(255),
-            // unique: true
         },
         channelIds:{
             type: DataTypes.TEXT,

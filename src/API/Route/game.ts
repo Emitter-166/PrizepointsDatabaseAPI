@@ -12,11 +12,20 @@ export const updateGame = async (req: Request, res: Response) => {
     }
 
     let defaultObject = {...req.query};
+    delete defaultObject.name
 
-    const [model, created] = await sequelize.model("games").findOrCreate({
-        where: {name: name},
-        defaults: defaultObject
+    let created:boolean = false;
+
+    let model = await sequelize.model("games").findOne({
+        where: {name: name}
     })
+    if(model === null){
+      model = await sequelize.model("games").create({
+           name: name,
+           defaultObject
+       })
+        created = true
+    }
 
     const updatedAt = (new Date()).getTime();
     gamesCache.set(name as string, updatedAt);
@@ -47,6 +56,7 @@ export const getGame = async (req: Request, res: Response) => {
             res.status(400).send({
                 message: "invalid body"
             })
+            return;
         }
     }
     const model = await sequelize.model("games").findOne({
